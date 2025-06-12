@@ -32,13 +32,9 @@ El proyecto **Microservicio Gestión de Alumno** es un microservicio diseñado p
 2. **Instalar dependencias:**
 
    ```bash
-   mvn clean install
+  ./gradlew clean build
 
 3. **Compila y ejecuta el backend:**
-
-   ```bash
-   # Construir el JAR 
-    ./gradlew clean build
 
     # Construir imagen Docker
     docker-compose build
