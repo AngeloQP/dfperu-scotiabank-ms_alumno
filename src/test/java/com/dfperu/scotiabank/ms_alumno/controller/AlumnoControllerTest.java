@@ -19,9 +19,13 @@ import reactor.core.publisher.Mono;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * Pruebas unitarias para el controlador {@link AlumnoController},
+ * utilizando WebFluxTest y WebTestClient.
+ */
 @WebFluxTest(controllers = AlumnoController.class)
 @AutoConfigureWebTestClient
-@Import(AlumnoControllerTest.TestSecurityConfig.class)  // <--- aquí importas seguridad de test
+@Import(AlumnoControllerTest.TestSecurityConfig.class)
 class AlumnoControllerTest {
 
     @Autowired
@@ -30,6 +34,10 @@ class AlumnoControllerTest {
     @MockBean
     private AlumnoService alumnoService;
 
+    /**
+     * Prueba del endpoint POST /api/alumnos para guardar un alumno.
+     * Se simula el servicio usando Mono.empty() y se espera una respuesta 200 OK.
+     */
     @Test
     void testGuardarAlumno() {
         AlumnoDTO alumnoDTO = new AlumnoDTO(5L, "Angelo", "Querevalu", 1, 22);
@@ -42,7 +50,10 @@ class AlumnoControllerTest {
                 .expectStatus().isOk();
     }
 
-    // 🔐 Clase anidada que desactiva seguridad SOLO en este test
+    /**
+     * Configuración de seguridad utilizada solo para pruebas,
+     * que permite todas las solicitudes sin autenticación.
+     */
     @TestConfiguration
     @EnableWebFluxSecurity
     static class TestSecurityConfig {
@@ -56,4 +67,3 @@ class AlumnoControllerTest {
         }
     }
 }
-

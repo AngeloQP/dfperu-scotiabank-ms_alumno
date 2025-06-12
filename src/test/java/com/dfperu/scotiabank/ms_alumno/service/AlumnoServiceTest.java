@@ -15,6 +15,10 @@ import reactor.test.StepVerifier;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias para {@link AlumnoServiceImpl}.
+ * Se verifica el comportamiento del servicio bajo distintas condiciones de entrada.
+ */
 @ExtendWith(MockitoExtension.class)
 class AlumnoServiceTest {
 
@@ -27,12 +31,14 @@ class AlumnoServiceTest {
     @InjectMocks
     private AlumnoServiceImpl alumnoService;
 
+    /**
+     * Verifica que un alumno nuevo sea guardado correctamente cuando no existe en el repositorio.
+     */
     @Test
     void testGuardarAlumnoCuandoNoExiste() {
         AlumnoDTO dto = new AlumnoDTO(1L, "Angelo", "Querevalu", 1, 25);
         Alumno alumno = new Alumno(1L, "Angelo", "Querevalu", 1, 25);
 
-        // ✅ Corrección: cierra paréntesis del when() correctamente
         when(repository.existsById(1L)).thenReturn(Mono.just(false));
         when(mapper.toEntity(dto)).thenReturn(alumno);
         when(repository.save(alumno)).thenReturn(Mono.just(alumno));
@@ -44,11 +50,15 @@ class AlumnoServiceTest {
         verify(repository).save(alumno);
     }
 
+    /**
+     * Verifica que se retorne un error si el nombre del alumno es nulo.
+     * También asegura que no se intente guardar el alumno.
+     */
     @Test
     void testGuardarAlumnoConNombreNulo() {
         AlumnoDTO dto = new AlumnoDTO(1L, null, "Querevalu", 1, 25);
 
-        when(repository.existsById(1L)).thenReturn(Mono.just(false)); // Evita NPE si se evalúa
+        when(repository.existsById(1L)).thenReturn(Mono.just(false)); 
 
         alumnoService.guardarAlumno(dto)
                 .as(StepVerifier::create)
@@ -60,7 +70,10 @@ class AlumnoServiceTest {
         verify(repository, never()).save(any());
     }
 
-
+    /**
+     * Verifica que no se guarde un alumno si ya existe en el sistema (por su ID).
+     * Se espera un error con un mensaje adecuado.
+     */
     @Test
     void testGuardarAlumnoYaExiste() {
         AlumnoDTO dto = new AlumnoDTO(1L, "Angelo", "Querevalu", 1, 25);
